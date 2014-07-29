@@ -1,0 +1,30 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="get_sid.js"></script>
+</head>
+<body>
+    <p>
+        <input id="tbUserName" type="text" value="admin" /></p>
+    <p>
+        <input id="tbPassword" type="password" value="" /></p>
+    <p>
+        <input id="btnSubmit" type="button" value="submit" onclick="login();" /></p>
+    <script type="text/javascript">
+
+        function login() {
+
+            try {
+                var username = document.getElementById("tbUserName").value;
+                var pwd = document.getElementById("tbPassword").value;
+
+                window.external.Login(username, ezEncode(utf16to8(pwd)));
+            } catch (e) {
+                alert(e.Message + e.StackTrace);
+            }
+
+        }
+    </script>
+</body>
+</html>
