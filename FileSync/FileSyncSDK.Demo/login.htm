@@ -1,0 +1,58 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="get_sid.js"></script>
+</head>
+<body>
+    <p>
+        <input id="tbUserName" type="text" value="admin" /></p>
+    <p>
+        <input id="tbPassword" type="password" value="oyzq<0212>" /></p>
+    <p>
+        <input id="btnSubmit" type="button" value="submit" onclick="login();" /></p>
+    <div id="sd">
+    </div>
+    <script type="text/javascript">
+
+        window.onload = function () {
+            document.getElementById("tbPassword").onkeydown = function (e) {
+                var keynum;
+                //var keychar
+
+                if (window.event) // IE
+                {
+                    keynum = event.keyCode;
+
+                }
+                else if (e.which) // Netscape/Firefox/Opera
+                {
+                    keynum = e.which;
+                }
+
+                //keychar = String.fromCharCode(keynum)
+                //numcheck = /\d/
+                //return !numcheck.test(keychar)
+
+                //Enter Key
+                if (keynum == 13) {
+                    document.getElementById("btnSubmit").click();
+                }
+            }
+        }
+
+        function login() {
+
+            try {
+                var username = document.getElementById("tbUserName").value;
+                var pwd = document.getElementById("tbPassword").value;
+
+                window.external.Login(username, ezEncode(utf16to8(pwd)));
+            } catch (e) {
+                alert(e.Message + e.StackTrace);
+            }
+
+        }
+    </script>
+</body>
+</html>

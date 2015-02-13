@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSync", "FileSync\FileSync.csproj", "{F3B52AB3-FE2B-4F62-85E8-5A924820E664}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSync", "FileSyncSDK.Demo\FileSyncSDK.Demo.csproj", "{F3B52AB3-FE2B-4F62-85E8-5A924820E664}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSync.Library", "FileSync.Library\FileSync.Library.csproj", "{891E9848-511F-4E69-A26A-C39C34B1C862}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSyncSDK", "FileSyncSDK\FileSyncSDK.csproj", "{891E9848-511F-4E69-A26A-C39C34B1C862}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
