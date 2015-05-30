@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using FileSyncSDK;
+using System.IO;
 
 namespace FileSync
 {
@@ -15,6 +16,11 @@ namespace FileSync
         public MainFrm()
         {
             InitializeComponent();
+
+            TreeNode tn = new TreeNode();
+            tn.Tag = "share_root";
+            tn.Text = "/";
+            treeView1.Nodes.Add(tn);
         }
 
         private void MainFrm_Load(object sender, EventArgs e)
@@ -44,22 +50,12 @@ namespace FileSync
             switch (arg.Result)
             {
                 case FileSyncAPIRequestResult.Success:
-                    SetResult(arg.Response);
 
                     List<Folder> list = new List<Folder>();
 
                     list = JsonHelper.DeserializeObject<List<Folder>>(arg.Response);
 
-                    if (list != null && list.Count > 0)
-                    {
-                        foreach (Folder item in list)
-                        {
-                            if (item != null && !string.IsNullOrEmpty(item.Text))
-                            {
-                                SetResult(item.Text);
-                            }
-                        }
-                    }
+                    AddFolder(list);
 
                     break;
                 case FileSyncAPIRequestResult.Fail:
@@ -68,6 +64,117 @@ namespace FileSync
                 default:
 
                     break;
+            }
+        }
+
+        private void GetListFinish(object obj, FileSyncRequestResultEventArgs arg)
+        {
+            switch (arg.Result)
+            {
+                case FileSyncAPIRequestResult.Success:
+
+                    FileListResponse fileList = JsonHelper.DeserializeObject<FileListResponse>(arg.Response);
+
+                    if (listView1.InvokeRequired)
+                    {
+                        listView1.Invoke((EventHandler)delegate
+                        {
+                            if (fileList != null && fileList.datas != null && fileList.datas.Length > 0)
+                            {
+                                listView1.Items.Clear();
+                                foreach (FileMeta file in fileList.datas)
+                                {
+                                    ListViewItem item = new ListViewItem(file.filename);
+                                    item.Tag = file;
+                                    listView1.Items.Add(item);
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        if (fileList != null && fileList.datas != null && fileList.datas.Length > 0)
+                        {
+                            listView1.Items.Clear();
+                            foreach (FileMeta file in fileList.datas)
+                            {
+                                ListViewItem item = new ListViewItem(file.filename);
+                                item.Tag = file;
+                                listView1.Items.Add(item);
+                            }
+                        }
+                    }
+
+                    break;
+                case FileSyncAPIRequestResult.Fail:
+                    MessageBox.Show(arg.Error.error_msg);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void AddFolder(List<Folder> list)
+        {
+            if (list != null && list.Count > 0)
+            {
+
+                if (treeView1.InvokeRequired)
+                {
+                    treeView1.Invoke((EventHandler)delegate
+                    {
+                        TreeNode node = treeView1.SelectedNode;
+                        if (node != null)
+                        {
+                            node.Nodes.Clear();
+
+                            foreach (Folder item in list)
+                            {
+                                if (item != null && !string.IsNullOrEmpty(item.Text))
+                                {
+                                    TreeNode tn = new TreeNode();
+                                    tn.Text = item.Text;
+                                    tn.Tag = Path.Combine(node.Tag.ToString(), item.Text).Replace("share_root", "/").Replace("\\", "/").Replace("//", "/");
+                                    node.Nodes.Add(tn);
+                                }
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    TreeNode node = treeView1.SelectedNode;
+                    if (node != null)
+                    {
+                        node.Nodes.Clear();
+
+                        foreach (Folder item in list)
+                        {
+                            if (item != null && !string.IsNullOrEmpty(item.Text))
+                            {
+                                TreeNode tn = new TreeNode();
+                                tn.Text = item.Text;
+                                tn.Tag = Path.Combine(node.Tag.ToString(), item.Text).Replace("share_root", "/").Replace("\\", "/").Replace("//", "/");
+                                node.Nodes.Add(tn);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SetUrl(string url)
+        {
+            if (tbUrl.InvokeRequired)
+            {
+                this.Invoke((EventHandler)delegate
+                {
+                    tbUrl.Text = url;
+                });
+            }
+            else
+            {
+                tbUrl.Text = url;
             }
         }
 
@@ -107,7 +214,11 @@ namespace FileSync
 
                         response.RawResponse = arg.Response;
 
+                        UploadResponse resp = JsonHelper.DeserializeObject<UploadResponse>(arg.Response);
+
                         SetResult(arg.Response);
+
+                        SetResult(resp.status.ToString());
                     }
 
                     break;
@@ -145,12 +256,6 @@ namespace FileSync
             }
         }
 
-        private void btnGetTree_Click(object sender, EventArgs e)
-        {
-            FileManager fm = new FileManager(Program.fsConnect);
-            fm.GetTree(false, "/Public", new FileSyncAPIRequest.FileSyncRequestCompletedHandler(GetTreeFinish));
-        }
-
         private void btnUpload_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
@@ -159,21 +264,43 @@ namespace FileSync
                 string newFileName = Guid.NewGuid().ToString() + "_" + System.IO.Path.GetFileName(selectedFile);
 
                 FileManager mgr = new FileManager(Program.fsConnect);
-                mgr.Upload(@"/Public", false, selectedFile, newFileName, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(UploadFinish));
+                mgr.Upload(tbUrl.Text, false, selectedFile, newFileName, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(UploadFinish));
             }
         }
 
-        private void btnOpenImage_Click(object sender, EventArgs e)
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            //try
-            //{
-            //    string url = string.Format("http://192.168.1.85:8080/cgi-bin/filemanager/utilRequest.cgi/baidu.png?sid={0}&func=get_viewer&source_path=/BaiduYun/test&source_file=baidu.PNG", Setting.SessionID);
-            //    pictureBox1.Image = HttpHelper.GetWithStream(url);
-            //}
-            //catch (Exception ex)
-            //{
-            //    SetResult(ex.Message);
-            //}
+            SetUrl(e.Node.Tag.ToString());
+
+            string path = "";
+
+            if (e.Node.Text == "/")
+            {
+                path = "share_root";
+            }
+            else
+            {
+                path = e.Node.Tag.ToString();
+            }
+
+            FileManager fm = new FileManager(Program.fsConnect);
+            fm.GetTree(false, path, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(GetTreeFinish));
+            fm.GetList(path, false, 0, 500, SortField.FileName, SortDirection.Asc, FileHidden.Hidden, FileType.All, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(GetListFinish));
+        }
+
+        private void propertyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems != null && listView1.SelectedItems.Count > 0)
+            {
+                ListViewItem item = listView1.SelectedItems[0];
+
+                FileMeta meta = item.Tag as FileMeta;
+                meta.FilePath = tbUrl.Text;
+
+                PropertyFrm frm = new PropertyFrm(meta);
+
+                frm.ShowDialog();
+            }
         }
     }
 }

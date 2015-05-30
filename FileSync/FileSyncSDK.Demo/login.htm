@@ -6,17 +6,16 @@
 </head>
 <body>
     <p>
-        <input id="tbUserName" type="text" value="admin" /></p>
+        <input id="tbUserName" type="text" value="" /></p>
     <p>
-        <input id="tbPassword" type="password" value="oyzq<0212>" /></p>
+        <input id="tbPassword" type="password" value="" /></p>
     <p>
         <input id="btnSubmit" type="button" value="submit" onclick="login();" /></p>
-    <div id="sd">
-    </div>
     <script type="text/javascript">
 
         window.onload = function () {
-            document.getElementById("tbPassword").onkeydown = function (e) {
+
+            document.body.onkeydown = function (e) {
                 var keynum;
                 //var keychar
 
@@ -30,15 +29,15 @@
                     keynum = e.which;
                 }
 
-                //keychar = String.fromCharCode(keynum)
-                //numcheck = /\d/
-                //return !numcheck.test(keychar)
-
                 //Enter Key
                 if (keynum == 13) {
-                    document.getElementById("btnSubmit").click();
+                    var username = document.getElementById("tbUserName").value;
+                    var pwd = document.getElementById("tbPassword").value;
+                    if ((username && username.length > 0) && (pwd && pwd.length > 0)) {
+                        document.getElementById("btnSubmit").click();
+                    }
                 }
-            }
+            };
         }
 
         function login() {

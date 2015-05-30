@@ -87,15 +87,29 @@ namespace FileSyncSDK
             try
             {
                 requestUri = FileSyncUtility.AddParametersToURL(requestUri, requestParams);
-                request = (HttpWebRequest)WebRequest.Create(requestUri);
+                request = (HttpWebRequest)WebRequest.Create(new Uri(requestUri));
 
-                boundary = "----------" + DateTime.Now.Ticks.ToString("X");
+                boundary = "----------" + DateTime.Now.Ticks.ToString("x");
+
+                byte[] beginBoundary = Encoding.UTF8.GetBytes(string.Format("--{0}\r\n", boundary));
+
+                string fileTemplate = "Content-Disposition: form-data; name=\"file\"; filename=\"{0}\"\r\nContent-Type: application/octet-stream\r\n\r\n";
+                byte[] bfile = Encoding.UTF8.GetBytes(String.Format(fileTemplate, fileParam.FileKey));
+
+                byte[] endBoundary = Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
+
                 request.Method = httpMethod;
-                request.ContentType = "multipart/form-data;charset=utf-8;boundary=" + boundary;
+                request.ContentType = "multipart/form-data; boundary=" + boundary;
+                request.ContentLength = beginBoundary.Length + bfile.Length + fileParam.FileData.Length + endBoundary.Length;
+                request.AllowWriteStreamBuffering = false;
+                request.Timeout = 300000;
 
                 state.request = request;
                 state.requestParams = requestParams;
                 state.fileParam = fileParam;
+                state.beginBoundary = beginBoundary;
+                state.bfile = bfile;
+                state.endBoundary = endBoundary;
 
                 request.BeginGetRequestStream(new AsyncCallback(RequestReadyWithFile), state);
             }
@@ -126,39 +140,12 @@ namespace FileSyncSDK
             FileSyncAPIRequestState state = asyncResult.AsyncState as FileSyncAPIRequestState;
             HttpWebRequest request = state.request;
 
-            byte[] beginBoundary = Encoding.UTF8.GetBytes("--" + boundary + "\r\n");
-            byte[] subEndBoundary = Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
-            byte[] endBoundary = Encoding.UTF8.GetBytes("\r\n--" + boundary + "--");
-
-            //request.ContentLength=beginBoundary.Length+
-
-            //由于QNAP的API是吧参数放在url中，不是request body. 所以不需要这段逻辑
-            //Dictionary<string, object> paras = state.requestParams;
-            //string paraTemplate = "Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
-            //string fileTemplate = "Content-Disposition: form-data; name=\"{0}\";filename=\"file.png\"\r\nContent-Type: image/png\r\n\r\n";
-            string fileTemplate = "Content-Disposition: form-data; name=\"{0}\";filename=\"{0}\"\r\nContent-Type: application/octet-stream\r\n\r\n";//application/octet-stream是不是通用的？ 2015-02-13 Rocky
-
             using (Stream stream = request.EndGetRequestStream(asyncResult))
             {
-                stream.Write(beginBoundary, 0, beginBoundary.Length);
-
-                //foreach (KeyValuePair<string, object> param in state.requestParams)
-                //{
-                //    string value = param.Value as string;
-                //    if (value != null)
-                //    {
-                //        byte[] bpara = Encoding.UTF8.GetBytes(String.Format(paraTemplate, param.Key, value));
-                //        stream.Write(bpara, 0, bpara.Length);
-                //        stream.Write(subEndBoundary, 0, subEndBoundary.Length);
-                //    }
-                //}
-
-                string str = String.Format(fileTemplate, state.fileParam.FileKey);
-                byte[] bfile = Encoding.UTF8.GetBytes(str);
-                stream.Write(bfile, 0, bfile.Length);
+                stream.Write(state.beginBoundary, 0, state.beginBoundary.Length);
+                stream.Write(state.bfile, 0, state.bfile.Length);
                 stream.Write(state.fileParam.FileData, 0, state.fileParam.FileData.Length);
-
-                stream.Write(endBoundary, 0, endBoundary.Length);
+                stream.Write(state.endBoundary, 0, state.endBoundary.Length);
             }
             request.BeginGetResponse(new AsyncCallback(ResponseReady), request);
         }
@@ -284,7 +271,7 @@ namespace FileSyncSDK
         }
 
         /// <summary>
-        /// 判断是否是上传照片
+        /// 判断是否是上传文件
         /// </summary>
         private FileSyncAPIRequestFileParam IsUploadFile(Dictionary<string, object> requestParams)
         {
@@ -297,20 +284,15 @@ namespace FileSyncSDK
                 {
                     fileParam = new FileSyncAPIRequestFileParam();
                     fileParam.FileKey = param.Key;
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        FileStream stream = new FileStream(fileTemp.FullName, FileMode.Open);
-                        //stream.Seek(0, SeekOrigin.Begin);
 
+                    using (FileStream stream = new FileStream(fileTemp.FullName, FileMode.Open))
+                    {
                         byte[] bytes = new byte[stream.Length];
+
+                        stream.Seek(0, SeekOrigin.Begin);
                         stream.Read(bytes, 0, bytes.Length);
 
-                        // 设置当前流的位置为流的开始 
-                        stream.Seek(0, SeekOrigin.Begin);
-
                         fileParam.FileData = bytes;
-
-                        stream.Close();
                     }
                 }
             }
@@ -336,6 +318,19 @@ namespace FileSyncSDK
         /// 请求的图片参数
         /// </summary>
         public FileSyncAPIRequestFileParam fileParam { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public byte[] beginBoundary { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public byte[] endBoundary { get; set; }
+        /// <summary>
+        /// 请求的图片参数
+        /// </summary>
+        public byte[] bfile { get; set; }
+
         #endregion
     }
 

@@ -16,7 +16,7 @@ namespace FileSync
         [STAThread]
         static void Main()
         {
-            fsConnect = new FileSyncSDK.FileSync("Http", "10.0.0.12", 8080);
+            fsConnect = new FileSyncSDK.FileSync("Http", "10.0.0.12", 8866);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

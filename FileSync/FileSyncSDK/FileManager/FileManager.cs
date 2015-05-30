@@ -30,7 +30,7 @@ namespace FileSyncSDK
             //dict.Add("dest_folder", dest_folder);
             //dict.Add("dest_path", dest_path);
 
-            //m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(callback));
+            //m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
 
             throw new NotImplementedException();
         }
@@ -48,15 +48,34 @@ namespace FileSyncSDK
             dict.Add("dest_folder", dest_folder);
             dict.Add("dest_path", dest_path);
 
-            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(callback));
+            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
         }
 
-        /// <summary>
-        /// 获取指定目录下面的文件列表
-        /// </summary>
-        /// <param name="isiso"></param>
-        /// <param name="node"></param>
-        /// <param name="callback"></param>
+
+        public void GetList(string path, bool isiso, int start, int limit, string sortfield, SortDirection dir, FileHidden hidden, FileType ft, FileSyncAPIRequest.FileSyncRequestCompletedHandler callback)
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add("func", "get_list");
+            dict.Add("is_iso", isiso ? "1" : "0");
+            dict.Add("list_mode", "all");
+            dict.Add("path", path);
+            dict.Add("dir", dir == SortDirection.Asc ? "ASC" : "DESC");
+            dict.Add("limit", limit.ToString());
+            dict.Add("sort", sortfield);
+            dict.Add("start", start.ToString());
+            dict.Add("hidden_file", hidden == FileHidden.Hidden ? "1" : "0");
+            if (ft != FileType.All)
+            {
+                dict.Add("type", (uint)ft);
+            }
+            //dict.Add("mp4_360", "0");
+            //dict.Add("mp4_720", "0");
+            //dict.Add("flv_720", "0");
+            //dict.Add("filename", "");
+
+            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
+        }
+
         public void GetTree(bool isiso, string node, FileSyncAPIRequest.FileSyncRequestCompletedHandler callback)
         {
             Dictionary<string, object> dict = new Dictionary<string, object>();
@@ -64,7 +83,7 @@ namespace FileSyncSDK
             dict.Add("is_iso", isiso ? "1" : "0");
             dict.Add("node", node);
 
-            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(callback));
+            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
         }
 
         /// <summary>
@@ -83,9 +102,10 @@ namespace FileSyncSDK
             dict.Add("dest_path", destpath);
             dict.Add("overwrite", isoverwrite ? "1" : "0");
             dict.Add("progress", aliasname.Replace("/", "-"));
-            dict.Add(Path.GetFileName(filePath), new FileInfo(filePath));
+            //dict.Add(Path.GetFileName(filePath), new FileInfo(filePath));
+            dict.Add(filePath, new FileInfo(filePath));
 
-            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "POST", dict, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(callback));
+            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "POST", dict, callback);
         }
 
         /// <summary>
@@ -100,5 +120,54 @@ namespace FileSyncSDK
             m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
         }
 
+        
+        /// <summary>
+        /// 获取文件/文件夹状态
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="totalFile"></param>
+        /// <param name="fileName"></param>
+        /// <param name="callback"></param>
+        public void GetStatus(string path, int totalFile, string fileName, FileSyncAPIRequest.FileSyncRequestCompletedHandler callback)
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add("func", "stat");
+            dict.Add("path",path );
+            dict.Add("file_total", totalFile);
+            dict.Add("file_name", fileName);
+
+            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
+        }
+    }
+
+    public enum SortDirection
+    {
+        Asc,
+        Desc
+    }
+
+    public class SortField
+    {
+        public const string FileName = "filename";
+        public const string FileSize = "filesize";
+        public const string FileType = "filetype";
+        public const string Mt = "mt";
+        public const string Privilege = "privilege";
+        public const string Owner = "owner";
+        public const string Group = "group";
+    }
+
+    public enum FileHidden
+    {
+        Hidden,
+        Display
+    }
+
+    public enum FileType : uint
+    {
+        All = 0,
+        Music = 1,
+        Video = 2,
+        Photo = 3
     }
 }
