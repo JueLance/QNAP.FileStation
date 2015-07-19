@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace FileSyncSDK
+namespace FileSyncDemo
 {
     public class Authorization
     {
@@ -23,6 +23,7 @@ namespace FileSyncSDK
             Dictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("user", username);
             dict.Add("pwd", password);
+            dict.Add("sid", 0);
 
             tempCallback = callback;
 
@@ -62,7 +63,7 @@ namespace FileSyncSDK
                             error.error_code = requestErrorDomain;
                             error.error_msg = "An error occurs when parse server response." + ex.Message;
 
-                            tempCallback(this, new FileSyncRequestResultEventArgs(FileSyncAPIRequestResult.Fail, error));
+                            tempCallback(this, new FileSyncRequestResultEventArgs(null, FileSyncAPIRequestResult.Fail, error));
                         }
                     }
 

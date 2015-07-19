@@ -6,14 +6,62 @@
 </head>
 <body>
     <p>
-        <input id="tbUserName" type="text" value="" /></p>
+        Server:
+        <input id="tbServer" type="text" value="" />
+    </p>
     <p>
-        <input id="tbPassword" type="password" value="" /></p>
+        Port:
+        <input id="tbPort" type="text" value="" />
+    </p>
     <p>
-        <input id="btnSubmit" type="button" value="submit" onclick="login();" /></p>
+        UserName:
+        <input id="tbUserName" type="text" value="" />
+    </p>
+    <p>
+        Password:
+        <input id="tbPassword" type="password" value="" />
+    </p>
+    <p>
+        <input id="btnSubmit" type="button" value="submit" />
+    </p>
     <script type="text/javascript">
 
+        var FileStation = (function () {
+
+            return {
+                setEnv: function () {
+                    try {
+                        var server = document.getElementById("tbServer").value;
+                        var port = document.getElementById("tbPort").value;
+
+                        window.external.SetEnvironment(server, port);
+                    } catch (e) {
+                        alert(e.Message + e.StackTrace);
+                    }
+                },
+
+                login: function () {
+
+                    try {
+                        var username = document.getElementById("tbUserName").value;
+                        var pwd = document.getElementById("tbPassword").value;
+
+                        window.external.Login(username, ezEncode(utf16to8(pwd)));
+                    } catch (e) {
+                        alert(e.Message + e.StackTrace);
+                    }
+
+                }
+            };
+
+        })();
+
         window.onload = function () {
+
+            document.getElementById("btnSubmit").onclick = function () {
+                FileStation.setEnv();
+                FileStation.login();
+            }
 
             document.body.onkeydown = function (e) {
                 var keynum;
@@ -38,19 +86,6 @@
                     }
                 }
             };
-        }
-
-        function login() {
-
-            try {
-                var username = document.getElementById("tbUserName").value;
-                var pwd = document.getElementById("tbPassword").value;
-
-                window.external.Login(username, ezEncode(utf16to8(pwd)));
-            } catch (e) {
-                alert(e.Message + e.StackTrace);
-            }
-
         }
     </script>
 </body>

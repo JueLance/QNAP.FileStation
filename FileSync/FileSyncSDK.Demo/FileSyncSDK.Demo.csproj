@@ -8,12 +8,13 @@
     <ProjectGuid>{F3B52AB3-FE2B-4F62-85E8-5A924820E664}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FileSyncSDK.Demo</RootNamespace>
+    <RootNamespace>FileSyncDemo.Demo</RootNamespace>
     <AssemblyName>FileSyncSDK.Demo</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -53,10 +53,15 @@
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -79,6 +84,25 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FSFolderBrowserDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FSFolderBrowserDialog.Designer.cs">
+      <DependentUpon>FSFolderBrowserDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FSTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FSTreeView.Designer.cs">
+      <DependentUpon>FSTreeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FSTypingDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FSTypingDialog.Designer.cs">
+      <DependentUpon>FSTypingDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LinuxEnvironment.cs" />
     <Compile Include="LoginFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,12 +123,19 @@
     <Compile Include="PropertyFrm.Designer.cs">
       <DependentUpon>PropertyFrm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UiLog.cs" />
     <Compile Include="UploadResponse.cs" />
     <EmbeddedResource Include="AboutMeFrm.resx">
       <DependentUpon>AboutMeFrm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FSFolderBrowserDialog.resx">
+      <DependentUpon>FSFolderBrowserDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FSTypingDialog.resx">
+      <DependentUpon>FSTypingDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoginFrm.resx">
       <DependentUpon>LoginFrm.cs</DependentUpon>
@@ -140,9 +171,19 @@
     <Content Include="get_sid.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Lib\Newtonsoft.Json.dll" />
     <Content Include="login.htm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\drive_rename.png" />
+    <None Include="Resources\folder_add.png" />
+    <None Include="Resources\add.png" />
+    <None Include="Resources\page_copy.png" />
+    <None Include="Resources\disk.png" />
+    <None Include="Resources\delete.png" />
+    <None Include="Resources\arrow_refresh.png" />
+    <None Include="Resources\folder_go.png" />
+    <None Include="Resources\exit.png" />
     <Content Include="test.htm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

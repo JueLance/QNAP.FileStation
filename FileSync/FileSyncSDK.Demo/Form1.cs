@@ -12,7 +12,7 @@ using mshtml;
 //javascript(DHTML)代码和客户端应用程序代码之间实现双向通信.
 //if (webBrowser1.Document != null) webBrowser1.Document.GetElementById("Button1").InvokeMember("onclick"); 
 
-namespace FileSync
+namespace FileSyncDemo
 {
     //     using System.Security.Permissions;
     // [PermissionSet(SecurityAction.Demand, Name = "FullTrust
@@ -34,6 +34,11 @@ namespace FileSync
         }
 
         public void Test(String message)
+        {
+            MessageBox.Show(message, "client code");
+        }
+
+        public void Test2(String message, string msg)
         {
             MessageBox.Show(message, "client code");
         }

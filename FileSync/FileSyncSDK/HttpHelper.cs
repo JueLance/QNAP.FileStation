@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 //using System.Drawing;
 
-namespace FileSyncSDK
+namespace FileSyncDemo
 {
     public class HttpHelper
     {

@@ -8,9 +8,11 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml;
-using FileSyncSDK;
+using FileSyncDemo;
+using System.Runtime.InteropServices;
+using System.Security.Permissions;
 
-namespace FileSync
+namespace FileSyncDemo
 {
     public partial class LoginFrm : Form
     {
@@ -32,13 +34,18 @@ namespace FileSync
             auth.Authorize(username, password, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(AuthorizeFinish));
         }
 
+        public void SetEnvironment(string server, int port)
+        {
+            Program.fsConnect = new FileSync("Http", server, port);
+        }
+
         private void AuthorizeFinish(object obj, FileSyncRequestResultEventArgs arg)
         {
             switch (arg.Result)
             {
                 case FileSyncAPIRequestResult.Success:
 
-                    if (FileSyncSDK.FileSync.CurrentUser.IsUserSessionValid())
+                    if (FileSync.CurrentUser.IsUserSessionValid())
                     {
                         this.DialogResult = DialogResult.OK;
                     }

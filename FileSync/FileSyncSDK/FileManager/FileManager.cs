@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Web;
 
-namespace FileSyncSDK
+namespace FileSyncDemo
 {
     public class FileManager
     {
@@ -45,12 +46,69 @@ namespace FileSyncSDK
         {
             Dictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("func", "createdir");
-            dict.Add("dest_folder", dest_folder);
-            dict.Add("dest_path", dest_path);
+            dict.Add("dest_folder", HttpUtility.UrlEncode(dest_folder));
+            dict.Add("dest_path", HttpUtility.UrlEncode(dest_path));
+
+            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
+        }
+        
+        /// <summary>
+        /// 删除文件或者文件夹
+        /// </summary>
+        /// <param name="path">Folder path.</param>
+        /// <param name="file_total">Total number of folder/file(s).</param>
+        /// <param name="file_name">Folder/file name.</param>
+        /// <param name="callback"></param>
+        public void Delete(string path, int file_total, string file_name, FileSyncAPIRequest.FileSyncRequestCompletedHandler callback)
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add("func", "delete");
+            dict.Add("path", HttpUtility.UrlEncode(path));
+            dict.Add("file_total", file_total.ToString());
+            dict.Add("file_name", HttpUtility.UrlEncode(file_name));
 
             m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
         }
 
+        /// <summary>
+        /// Rename a folder or file in the specified path.
+        /// </summary>
+        /// <param name="path">Path of the folder/ file</param>
+        /// <param name="source_name">Current folder/ file name to be changed</param>
+        /// <param name="dest_name">New folder/ file name</param>
+        /// <param name="callback"></param>
+        public void Rename(string path, string source_name, string dest_name, FileSyncAPIRequest.FileSyncRequestCompletedHandler callback)
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add("func", "rename");
+            dict.Add("path", HttpUtility.UrlEncode(path));
+            dict.Add("source_name", HttpUtility.UrlEncode(source_name));
+            dict.Add("dest_name", HttpUtility.UrlEncode(dest_name));
+
+            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
+        }
+
+        /// <summary>
+        /// 移动文件
+        /// </summary>
+        /// <param name="source_file">Name of the copied file/folder</param>
+        /// <param name="source_total">Total number of copied files/folders</param>
+        /// <param name="source_path">Source path of the copied file/folder</param>
+        /// <param name="dest_path">Destination of the copied file/folder</param>
+        /// <param name="mode">1: skip, 0: overwrite</param>
+        /// <param name="callback"></param>
+        public void Move(string source_file, int source_total, string source_path, string dest_path, int mode, FileSyncAPIRequest.FileSyncRequestCompletedHandler callback)
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add("func", "move");
+            dict.Add("source_file", HttpUtility.UrlEncode(source_file));
+            dict.Add("source_total", source_total.ToString());
+            dict.Add("source_path", HttpUtility.UrlEncode(source_path));
+            dict.Add("dest_path", HttpUtility.UrlEncode(dest_path));
+            dict.Add("mode", mode.ToString());
+
+            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
+        }
 
         public void GetList(string path, bool isiso, int start, int limit, string sortfield, SortDirection dir, FileHidden hidden, FileType ft, FileSyncAPIRequest.FileSyncRequestCompletedHandler callback)
         {
@@ -120,7 +178,7 @@ namespace FileSyncSDK
             m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
         }
 
-        
+
         /// <summary>
         /// 获取文件/文件夹状态
         /// </summary>
@@ -132,7 +190,7 @@ namespace FileSyncSDK
         {
             Dictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("func", "stat");
-            dict.Add("path",path );
+            dict.Add("path", path);
             dict.Add("file_total", totalFile);
             dict.Add("file_name", fileName);
 

@@ -6,7 +6,7 @@ using System.Net;
 using System.IO;
 using System.Runtime.Serialization.Json;
 
-namespace FileSyncSDK
+namespace FileSyncDemo
 {
     public class FileSyncAPIRequest
     {
@@ -42,7 +42,7 @@ namespace FileSyncSDK
 
                 if (DownloadStringCompleted != null)
                 {
-                    DownloadStringCompleted(this, new FileSyncRequestResultEventArgs(FileSyncAPIRequestResult.Fail, error));
+                    DownloadStringCompleted(this, new FileSyncRequestResultEventArgs(null, FileSyncAPIRequestResult.Fail, error));
                 }
 
                 return;
@@ -82,7 +82,7 @@ namespace FileSyncSDK
         /// <param name="imageParam">图片参数</param>
         private void AsyncRequestAPIWithFile(string requestUri, string httpMethod, Dictionary<string, object> requestParams, FileSyncAPIRequestFileParam fileParam)
         {
-            HttpWebRequest request;
+            HttpWebRequest request = null;
             FileSyncAPIRequestState state = new FileSyncAPIRequestState();
             try
             {
@@ -119,12 +119,12 @@ namespace FileSyncSDK
                 {
                     FileSyncError error = new FileSyncError();
                     error.error_code = requestErrorDomain;
-                    error.error_msg = "A Error Occurred While Creating HTTP Web Request." + ex.Message;
+                    error.error_msg = "A Error Occurred While Creating HTTP Web Request. " + ex.Message;
                     //System.Windows.Deployment.Current.Dispatcher.BeginInvoke(delegate()
                     // {
                     if (DownloadStringCompleted != null)
                     {
-                        DownloadStringCompleted(this, new FileSyncRequestResultEventArgs(FileSyncAPIRequestResult.Fail, error));
+                        DownloadStringCompleted(this, new FileSyncRequestResultEventArgs(request == null ? null : request.Address, FileSyncAPIRequestResult.Fail, error) { RequestParams = requestParams });
                     }
                     // });
                 }
@@ -147,7 +147,7 @@ namespace FileSyncSDK
                 stream.Write(state.fileParam.FileData, 0, state.fileParam.FileData.Length);
                 stream.Write(state.endBoundary, 0, state.endBoundary.Length);
             }
-            request.BeginGetResponse(new AsyncCallback(ResponseReady), request);
+            request.BeginGetResponse(new AsyncCallback(ResponseReady), state);
         }
 
         #endregion
@@ -161,7 +161,7 @@ namespace FileSyncSDK
         /// <param name="requestParams">API的请求参数</param>
         private void AsyncRequestAPI(string requestUri, string httpMethod, Dictionary<string, object> requestParams)
         {
-            HttpWebRequest request;
+            HttpWebRequest request = null;
             try
             {
                 // POST
@@ -184,7 +184,12 @@ namespace FileSyncSDK
                     requestUri = FileSyncUtility.AddParametersToURL(requestUri, requestParams);
                     request = (HttpWebRequest)WebRequest.Create(requestUri);
                     request.Method = httpMethod;
-                    request.BeginGetResponse(ResponseReady, request);
+
+                    FileSyncAPIRequestState state = new FileSyncAPIRequestState();
+                    state.request = request;
+                    state.requestParams = requestParams;
+
+                    request.BeginGetResponse(ResponseReady, state);
                 }
             }
             catch
@@ -196,7 +201,7 @@ namespace FileSyncSDK
                     error.error_msg = "A Error Occurred While Creating HTTP Web Request.";
                     if (DownloadStringCompleted != null)
                     {
-                        DownloadStringCompleted(this, new FileSyncRequestResultEventArgs(FileSyncAPIRequestResult.Fail, error));
+                        DownloadStringCompleted(this, new FileSyncRequestResultEventArgs(request == null ? null : request.Address, FileSyncAPIRequestResult.Fail, error));
                     }
                 }
             }
@@ -221,7 +226,7 @@ namespace FileSyncSDK
                     writer.Flush();
                 }
             }
-            request.BeginGetResponse(new AsyncCallback(ResponseReady), request);
+            request.BeginGetResponse(new AsyncCallback(ResponseReady), state);
         }
 
         #endregion
@@ -233,7 +238,8 @@ namespace FileSyncSDK
         /// <param name="asyncResult">异步请求返回的结果</param>
         void ResponseReady(IAsyncResult asyncResult)
         {
-            HttpWebRequest request = asyncResult.AsyncState as HttpWebRequest;
+            FileSyncAPIRequestState state = asyncResult.AsyncState as FileSyncAPIRequestState;
+            HttpWebRequest request = state.request;
             HttpWebResponse response = null;
 
             try
@@ -251,7 +257,7 @@ namespace FileSyncSDK
 
                 if (DownloadStringCompleted != null)
                 {
-                    DownloadStringCompleted(this, new FileSyncRequestResultEventArgs(FileSyncAPIRequestResult.Success, result));
+                    DownloadStringCompleted(this, new FileSyncRequestResultEventArgs(request == null ? null : request.Address, FileSyncAPIRequestResult.Success, result) { RequestParams = state.requestParams });
                 }
             }
             catch (Exception ex)
@@ -264,7 +270,7 @@ namespace FileSyncSDK
 
                     if (DownloadStringCompleted != null)
                     {
-                        DownloadStringCompleted(this, new FileSyncRequestResultEventArgs(FileSyncAPIRequestResult.Fail, error));
+                        DownloadStringCompleted(this, new FileSyncRequestResultEventArgs(request == null ? null : request.Address, FileSyncAPIRequestResult.Fail, error) { RequestParams = state.requestParams });
                     }
                 }
             }

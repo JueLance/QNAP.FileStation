@@ -8,7 +8,7 @@
     <ProjectGuid>{891E9848-511F-4E69-A26A-C39C34B1C862}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FileSyncSDK</RootNamespace>
+    <RootNamespace>FileSyncDemo</RootNamespace>
     <AssemblyName>FileSyncSDK</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

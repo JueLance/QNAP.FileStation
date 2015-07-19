@@ -1,4 +1,4 @@
-﻿namespace FileSync
+﻿namespace FileSyncDemo
 {
     partial class AboutMeFrm
     {

@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace FileSyncSDK
+namespace FileSyncDemo
 {
     public class JsonHelper
     {

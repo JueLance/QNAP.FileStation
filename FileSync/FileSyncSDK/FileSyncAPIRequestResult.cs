@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FileSyncSDK
+namespace FileSyncDemo
 {
     public enum FileSyncAPIRequestResult : uint
     {
