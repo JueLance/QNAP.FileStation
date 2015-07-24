@@ -1,4 +1,4 @@
-FileSync
+QNAP FileStation
 ========
 
 With the QNAP FileStation Web API, I made an PC application to help me manage file via PC. Currently, it just a prototype, if you are interesting in it, free feel join it.
