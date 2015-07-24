@@ -28,16 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("/");
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FSFolderBrowserDialog));
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnOpen = new System.Windows.Forms.Button();
             this.tbUrl = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnNewFloder = new System.Windows.Forms.Button();
             this.btnCancle = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.lknNewFloder = new System.Windows.Forms.LinkLabel();
             this.tvTree = new FileSyncDemo.FSTreeView();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -82,19 +85,32 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.btnNewFloder);
             this.panel2.Controls.Add(this.btnCancle);
             this.panel2.Controls.Add(this.btnOK);
-            this.panel2.Controls.Add(this.lknNewFloder);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel2.Location = new System.Drawing.Point(0, 450);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(478, 42);
             this.panel2.TabIndex = 1;
             // 
+            // btnNewFloder
+            // 
+            this.btnNewFloder.Image = global::FileSyncDemo.Properties.Resources.folder_add;
+            this.btnNewFloder.Location = new System.Drawing.Point(14, 9);
+            this.btnNewFloder.Name = "btnNewFloder";
+            this.btnNewFloder.Size = new System.Drawing.Size(97, 29);
+            this.btnNewFloder.TabIndex = 2;
+            this.btnNewFloder.Text = "New Folder";
+            this.btnNewFloder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnNewFloder.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnNewFloder.UseVisualStyleBackColor = true;
+            this.btnNewFloder.Click += new System.EventHandler(this.btnNewFloder_Click);
+            // 
             // btnCancle
             // 
             this.btnCancle.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancle.Location = new System.Drawing.Point(391, 12);
+            this.btnCancle.Location = new System.Drawing.Point(390, 12);
             this.btnCancle.Name = "btnCancle";
             this.btnCancle.Size = new System.Drawing.Size(75, 23);
             this.btnCancle.TabIndex = 1;
@@ -105,7 +121,7 @@
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(290, 12);
+            this.btnOK.Location = new System.Drawing.Point(289, 12);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 1;
@@ -113,21 +129,12 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
-            // lknNewFloder
-            // 
-            this.lknNewFloder.AutoSize = true;
-            this.lknNewFloder.Location = new System.Drawing.Point(15, 17);
-            this.lknNewFloder.Name = "lknNewFloder";
-            this.lknNewFloder.Size = new System.Drawing.Size(61, 13);
-            this.lknNewFloder.TabIndex = 0;
-            this.lknNewFloder.TabStop = true;
-            this.lknNewFloder.Text = "New Folder";
-            this.lknNewFloder.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lknNewFloder_LinkClicked);
-            // 
             // tvTree
             // 
             this.tvTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvTree.FileSync = null;
+            this.tvTree.ImageKey = "folder.gif";
+            this.tvTree.ImageList = this.imageList1;
             this.tvTree.Location = new System.Drawing.Point(0, 52);
             this.tvTree.Name = "tvTree";
             treeNode1.Name = "Node0";
@@ -135,9 +142,28 @@
             treeNode1.Text = "/";
             this.tvTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1});
+            this.tvTree.SelectedImageKey = "folder.gif";
             this.tvTree.Size = new System.Drawing.Size(478, 398);
             this.tvTree.TabIndex = 2;
+            this.tvTree.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.tvTree_AfterExpand);
             this.tvTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvTree_AfterSelect);
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "excel.gif");
+            this.imageList1.Images.SetKeyName(1, "exe.gif");
+            this.imageList1.Images.SetKeyName(2, "folder.gif");
+            this.imageList1.Images.SetKeyName(3, "image.gif");
+            this.imageList1.Images.SetKeyName(4, "music.gif");
+            this.imageList1.Images.SetKeyName(5, "pdf.gif");
+            this.imageList1.Images.SetKeyName(6, "ppt.gif");
+            this.imageList1.Images.SetKeyName(7, "rar.gif");
+            this.imageList1.Images.SetKeyName(8, "txt.gif");
+            this.imageList1.Images.SetKeyName(9, "undefind.gif");
+            this.imageList1.Images.SetKeyName(10, "video.gif");
+            this.imageList1.Images.SetKeyName(11, "word.gif");
             // 
             // FSFolderBrowserDialog
             // 
@@ -150,13 +176,13 @@
             this.Controls.Add(this.panel1);
             this.KeyPreview = true;
             this.Name = "FSFolderBrowserDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FSFileBrowserDialog";
             this.Load += new System.EventHandler(this.FSFileBrowserDialog_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FSFileBrowserDialog_KeyDown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -170,7 +196,8 @@
         private System.Windows.Forms.TextBox tbUrl;
         private System.Windows.Forms.Button btnCancle;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.LinkLabel lknNewFloder;
         private FileSyncDemo.FSTreeView tvTree;
+        private System.Windows.Forms.Button btnNewFloder;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }

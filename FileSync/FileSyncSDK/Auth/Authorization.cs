@@ -30,6 +30,12 @@ namespace FileSyncDemo
             m_fsConnect.SendRequest("authLogin.cgi", "GET", dict, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(AuthorizeFinish));
         }
 
+
+        public void Logout(FileSyncAPIRequest.FileSyncRequestCompletedHandler callback)
+        {
+            m_fsConnect.SendRequest("wfm2Logout.cgi", "GET", null, callback);
+        }
+
         private void AuthorizeFinish(object obj, FileSyncRequestResultEventArgs arg)
         {
             switch (arg.Result)

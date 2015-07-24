@@ -89,14 +89,17 @@ namespace FileSyncDemo
                             {
                                 if (item != null && !string.IsNullOrEmpty(item.Text))
                                 {
-                                    TreeNode tn = new TreeNode();
-                                    tn.Text = item.Text;
-                                    tn.Tag = Path.Combine(node.Tag.ToString(), item.Text).Replace("share_root", "/").Replace("\\", "/").Replace("//", "/");
+                                    TreeNode tn = CreateNode(node, item);
                                     node.Nodes.Add(tn);
                                 }
                             }
 
                             this.PerformLayout();
+
+                            if (node == this.TopNode)
+                            {
+                                node.Expand();
+                            }
                         }
                     });
                 }
@@ -113,17 +116,28 @@ namespace FileSyncDemo
                         {
                             if (item != null && !string.IsNullOrEmpty(item.Text))
                             {
-                                TreeNode tn = new TreeNode();
-                                tn.Text = item.Text;
-                                tn.Tag = Path.Combine(node.Tag.ToString(), item.Text).Replace("share_root", "/").Replace("\\", "/").Replace("//", "/");
+                                TreeNode tn = CreateNode(node, item);
                                 node.Nodes.Add(tn);
                             }
                         }
 
                         this.PerformLayout();
+
+                        if (node == this.TopNode)
+                        {
+                            node.Expand();
+                        }
                     }
                 }
             }
+        }
+
+        public static TreeNode CreateNode(TreeNode parentNode, Folder item)
+        {
+            TreeNode tn = new TreeNode();
+            tn.Text = item.Text;
+            tn.Tag = Path.Combine(parentNode.Tag.ToString(), item.Text).Replace("share_root", "/").Replace("\\", "/").Replace("//", "/");
+            return tn;
         }
 
         public FileSync FileSync { get; set; }

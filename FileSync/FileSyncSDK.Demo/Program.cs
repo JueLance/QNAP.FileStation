@@ -18,9 +18,8 @@ namespace FileSyncDemo
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1());
+            //Application.Run(new TestForm());
             Application.Run(new MainFrm());
-            //Application.Run(new FSFileBrowserDialog());
         }
     }
 }

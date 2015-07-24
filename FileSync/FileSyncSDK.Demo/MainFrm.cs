@@ -28,6 +28,7 @@ namespace FileSyncDemo
         private void MainFrm_Load(object sender, EventArgs e)
         {
             ShowLoginWindow();
+            TaskForm.Instance.Owner = this;
         }
 
         private void ShowLoginWindow()
@@ -45,7 +46,7 @@ namespace FileSyncDemo
                 loginFrm.Close();
                 this.Show();
 
-                //SetResult(FileSyncSDK.FileSync.CurrentUser.SessionID);
+                //UiLog.Log(FileSyncSDK.FileSync.CurrentUser.SessionID);
             }
             else
             {
@@ -181,22 +182,6 @@ namespace FileSyncDemo
             }
         }
 
-        private void SetResult(string result)
-        {
-            if (richTextBox1.InvokeRequired)
-            {
-                //Invoke(new dgvDelegate(SetDgvDataSource), new object[] { table });
-                this.Invoke((EventHandler)delegate
-                {
-                    richTextBox1.AppendText(result + "\r\n");
-                });
-            }
-            else
-            {
-                richTextBox1.AppendText(result + "\r\n");
-            }
-        }
-
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FileManager fm = new FileManager(Program.fsConnect);
@@ -254,43 +239,7 @@ namespace FileSyncDemo
                     }
                     catch (Exception ex)
                     {
-                        SetResult(ex.Message);
-                    }
-
-                    break;
-                case FileSyncAPIRequestResult.Fail:
-                    MessageBox.Show("调用API时发生错误， 错误消息：" + arg.Error.error_msg);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void MoveFileFinish(object obj, FileSyncRequestResultEventArgs arg)
-        {
-            switch (arg.Result)
-            {
-                case FileSyncAPIRequestResult.Success:
-
-                    try
-                    {
-                        BaseResponse response = JsonConvert.DeserializeObject<BaseResponse>(arg.Response);
-
-                        if (response.Status == 1)
-                        {
-                            SyncFolderViewState();
-                            SyncFileViewState();
-
-                            UiLog.Log("移动文件成功");
-                        }
-                        else
-                        {
-                            UiLog.Log("移动文件失败");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        SetResult(ex.Message);
+                        UiLog.Log(ex.Message);
                     }
 
                     break;
@@ -325,7 +274,7 @@ namespace FileSyncDemo
                     }
                     catch (Exception ex)
                     {
-                        SetResult(ex.Message);
+                        UiLog.Log(ex.Message);
                     }
 
                     break;
@@ -360,7 +309,7 @@ namespace FileSyncDemo
                     }
                     catch (Exception ex)
                     {
-                        SetResult(ex.Message);
+                        UiLog.Log(ex.Message);
                     }
 
                     break;
@@ -385,6 +334,7 @@ namespace FileSyncDemo
                         if (response.Status == 1)
                         {
                             SyncFolderViewState();
+                            SyncFileViewState();
 
                             UiLog.Log("创建文件夹成功");
                         }
@@ -395,7 +345,7 @@ namespace FileSyncDemo
                     }
                     catch (Exception ex)
                     {
-                        SetResult(ex.Message);
+                        UiLog.Log(ex.Message);
                     }
 
                     break;
@@ -407,7 +357,36 @@ namespace FileSyncDemo
             }
         }
 
-        private void SyncFolderViewState()
+        private void LoginoutFinish(object obj, FileSyncRequestResultEventArgs arg)
+        {
+            switch (arg.Result)
+            {
+                case FileSyncAPIRequestResult.Success:
+
+                    try
+                    {
+                        BaseResponse response = JsonConvert.DeserializeObject<BaseResponse>(arg.Response);
+
+                        if (response.Status == 1)
+                        {
+                            Program.fsConnect = null;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        UiLog.Log(ex.Message);
+                    }
+
+                    break;
+                case FileSyncAPIRequestResult.Fail:
+                    MessageBox.Show("调用API时发生错误， 错误消息：" + arg.Error.error_msg);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void SyncFolderViewState()
         {
             if (tvTree.InvokeRequired)
             {
@@ -430,7 +409,7 @@ namespace FileSyncDemo
             }
         }
 
-        private void SyncFileViewState()
+        public void SyncFileViewState()
         {
             if (tvTree.InvokeRequired)
             {
@@ -486,33 +465,13 @@ namespace FileSyncDemo
             }
         }
 
-        private void moveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (listView1.SelectedItems != null && listView1.SelectedItems.Count > 0)
-            {
-                if (folderdlg == null)
-                {
-                    folderdlg = new FSFolderBrowserDialog();
-                }
-
-                if (folderdlg.ShowDialog() == DialogResult.OK)
-                {
-                    FileManager fm = new FileManager(Program.fsConnect);
-
-                    for (int i = 0; i < listView1.SelectedItems.Count; i++)
-                    {
-                        ListViewItem lvItem = listView1.SelectedItems[i];
-                        FileMeta meta = lvItem.Tag as FileMeta;
-                        fm.Move(meta.filename, 1, meta.FilePath, folderdlg.SelectedPath, 1, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(MoveFileFinish));
-                    }
-                }
-            }
-        }
 
         private void tsbNewFolder_Click(object sender, EventArgs e)
         {
             FSTypingDialog dlg = new FSTypingDialog();
             dlg.Owner = this;
+            dlg.Text = "New Folder";
+
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 FileManager fm = new FileManager(Program.fsConnect);
@@ -522,9 +481,9 @@ namespace FileSyncDemo
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("确认删除文件吗？\r\n文件一经删除，将无法找回。请谨慎操作。", Program.AppName, MessageBoxButtons.OKCancel) == DialogResult.OK)
+            if (listView1.SelectedItems != null && listView1.SelectedItems.Count > 0)
             {
-                if (listView1.SelectedItems != null && listView1.SelectedItems.Count > 0)
+                if (MessageBox.Show("确认删除文件吗？\r\n文件一经删除，将无法找回。请谨慎操作。", Program.AppName, MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
                     FileManager fm = new FileManager(Program.fsConnect);
 
@@ -596,9 +555,74 @@ namespace FileSyncDemo
             SyncFileViewState();
         }
 
+        private void moveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems != null && listView1.SelectedItems.Count > 0)
+            {
+                if (folderdlg == null)
+                {
+                    folderdlg = new FSFolderBrowserDialog();
+                }
+
+                folderdlg.Owner = this;
+                folderdlg.Text = "移动文件到";
+
+                if (folderdlg.ShowDialog() == DialogResult.OK)
+                {
+                    MoveOrCopyFile(ActionType.Move, folderdlg.SelectedPath);
+
+                    PasteData();
+                }
+            }
+        }
+
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (listView1.SelectedItems != null && listView1.SelectedItems.Count > 0)
+            {
+                if (folderdlg == null)
+                {
+                    folderdlg = new FSFolderBrowserDialog();
+                }
 
+                folderdlg.Owner = this;
+                folderdlg.Text = "复制文件到";
+
+                if (folderdlg.ShowDialog() == DialogResult.OK)
+                {
+                    MoveOrCopyFile(ActionType.Copy, folderdlg.SelectedPath);
+
+                    PasteData();
+                }
+            }
+        }
+
+        private void MoveOrCopyFile(ActionType actionType, string destinationPath)
+        {
+            if (listView1.SelectedItems != null && listView1.SelectedItems.Count > 0)
+            {
+                List<BackgroundTask> list = new List<BackgroundTask>();
+
+                for (int i = 0; i < listView1.SelectedItems.Count; i++)
+                {
+                    ListViewItem lvItem = listView1.SelectedItems[i];
+                    FileMeta meta = lvItem.Tag as FileMeta;
+
+                    BackgroundTask task = new BackgroundTask();
+                    task.FileName = meta.filename;
+                    task.FilePath = meta.FilePath;
+                    task.FullPath = meta.FullPath;
+
+                    task.DestinationPath = destinationPath;
+                    task.ActionType = actionType;
+                    task.DateTime = DateTime.Now;
+
+                    list.Add(task);
+                    //TaskForm.Instance.AddBackgroundTask(task);
+                }
+
+                Clipboard.SetData("fs_data", list);
+            }
         }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
@@ -608,13 +632,116 @@ namespace FileSyncDemo
 
         private void tsmDisconnect_Click(object sender, EventArgs e)
         {
-            Program.fsConnect = null;
+            Authorization auth = new Authorization(Program.fsConnect);
+            auth.Logout(LoginoutFinish);
+
             ShowLoginWindow();
         }
 
         private void tsmExit_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void tsmNewFolder_Click(object sender, EventArgs e)
+        {
+            tsbNewFolder.PerformClick();
+        }
+
+        private void listView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            #region CTRL + A
+
+            if (e.Control && e.KeyCode == Keys.A)
+            {
+                for (int i = 0; i < listView1.Items.Count; i++)
+                {
+                    listView1.Items[i].Selected = true;
+                }
+            }
+
+            #endregion
+
+            #region CTRL + C / CTRL + X
+
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                MoveOrCopyFile(ActionType.Copy, string.Empty);
+            }
+
+            if (e.Control && e.KeyCode == Keys.X)
+            {
+                MoveOrCopyFile(ActionType.Move, string.Empty);
+            }
+
+            #endregion
+
+            #region CTRL + V
+
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                PasteData();
+            }
+
+            #endregion
+        }
+
+        private void PasteData()
+        {
+            if (Clipboard.ContainsData("fs_data"))
+            {
+                List<BackgroundTask> list = Clipboard.GetData("fs_data") as List<BackgroundTask>;
+
+                if (list != null && list.Count > 0)
+                {
+                    bool isCut = false;
+
+                    foreach (BackgroundTask task in list)
+                    {
+                        if (string.IsNullOrEmpty(task.DestinationPath))
+                        {
+                            task.DestinationPath = tbUrl.Text;
+                        }
+
+                        TaskForm.Instance.AddBackgroundTask(task);
+
+                        //TODO: there are an bug Rocky 2015.07.24 Rocky
+                        if (task.ActionType == ActionType.Move)
+                        {
+                            isCut = true;
+                        }
+                    }
+
+                    tsbTask.PerformClick();
+
+                    if (isCut)
+                    {
+                        Clipboard.Clear();
+                    }
+                }
+            }
+        }
+
+        private void tsbTask_Click(object sender, EventArgs e)
+        {
+            if (!TaskForm.Instance.Visible)
+            {
+                TaskForm.Instance.Show();
+            }
+            else
+            {
+                TaskForm.Instance.Activate();
+            }
+
+            if (TaskForm.Instance.WindowState != FormWindowState.Normal)
+            {
+                TaskForm.Instance.WindowState = FormWindowState.Normal;
+            }
+        }
+
+        private void tsmPaste_Click(object sender, EventArgs e)
+        {
+            PasteData();
         }
     }
 }

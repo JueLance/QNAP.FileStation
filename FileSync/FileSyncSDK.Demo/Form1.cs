@@ -105,5 +105,19 @@ namespace FileSyncDemo
             //formLogin.InvokeMember("submit");
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //TaskForm.Instance.AddBackgroundTask(new ITask() { ID = 1, Name = "move file" });
+            //TaskForm.Instance.AddBackgroundTask(new ITask() { ID = 2, Name = "move file" });
+            //TaskForm.Instance.AddBackgroundTask(new ITask() { ID = 3, Name = "move file" });
+            //TaskForm.Instance.AddBackgroundTask(new ITask() { ID = 4, Name = "move file" });
+            //TaskForm.Instance.AddBackgroundTask(new ITask() { ID = 5, Name = "move file" });
+            //TaskForm.Instance.AddBackgroundTask(new ITask() { ID = 6, Name = "move file" });
+
+            TaskForm form = TaskForm.Instance;
+            TaskForm.Instance.Owner = this;
+            form.Show();
+        }
+
     }
 }

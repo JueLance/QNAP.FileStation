@@ -38,11 +38,14 @@ namespace FileSyncDemo
                 _instance.RichTextBox.Invoke((EventHandler)delegate
                 {
                     _instance.RichTextBox.AppendText(msg + (_instance.AutoWrap ? Environment.NewLine : ""));
+
+                    _instance.RichTextBox.ScrollToCaret();
                 });
             }
             else
             {
                 _instance.RichTextBox.AppendText(msg + (_instance.AutoWrap ? Environment.NewLine : ""));
+                _instance.RichTextBox.ScrollToCaret();
             }
         }
 

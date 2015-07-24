@@ -24,7 +24,7 @@ namespace FileSyncDemo
                 if (value != null)
                 {
                     paramStr += divStr;
-                    paramStr += param.Key + "=" + value;
+                    paramStr += param.Key + "=" + Uri.EscapeDataString(value);
                     divStr = "&";
                 }
             }

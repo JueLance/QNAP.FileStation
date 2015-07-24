@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using System.Xml.Serialization;
 
 namespace FileSyncDemo
 {
+    //[Serializable]
     public class BaseResponse
     {
         [JsonProperty("version")]
@@ -26,6 +28,7 @@ namespace FileSyncDemo
         public bool Success { get; set; }
     }
 
+    //[Serializable]
     public class FileListResponse
     {
         //"medialib": 1,
@@ -39,7 +42,6 @@ namespace FileSyncDemo
         public int rtt_support { get; set; }
         public FileMeta[] datas { get; set; }
     }
-
 
     public class FileMeta
     {

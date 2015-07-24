@@ -46,12 +46,12 @@ namespace FileSyncDemo
         {
             Dictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("func", "createdir");
-            dict.Add("dest_folder", HttpUtility.UrlEncode(dest_folder));
-            dict.Add("dest_path", HttpUtility.UrlEncode(dest_path));
+            dict.Add("dest_folder", dest_folder);
+            dict.Add("dest_path", dest_path);
 
             m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
         }
-        
+
         /// <summary>
         /// 删除文件或者文件夹
         /// </summary>
@@ -63,9 +63,9 @@ namespace FileSyncDemo
         {
             Dictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("func", "delete");
-            dict.Add("path", HttpUtility.UrlEncode(path));
+            dict.Add("path", path);
             dict.Add("file_total", file_total.ToString());
-            dict.Add("file_name", HttpUtility.UrlEncode(file_name));
+            dict.Add("file_name", file_name);
 
             m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
         }
@@ -81,9 +81,43 @@ namespace FileSyncDemo
         {
             Dictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("func", "rename");
-            dict.Add("path", HttpUtility.UrlEncode(path));
-            dict.Add("source_name", HttpUtility.UrlEncode(source_name));
-            dict.Add("dest_name", HttpUtility.UrlEncode(dest_name));
+            dict.Add("path", path);
+            dict.Add("source_name", source_name);
+            dict.Add("dest_name", dest_name);
+
+            m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
+        }
+
+        /// <summary>
+        /// Copy a file/folder from the source to the destination.
+        /// </summary>
+        /// <param name="source_file">Name of the copied file/folder</param>
+        /// <param name="source_total">Total number of copied files/folders</param>
+        /// <param name="source_path">Source path of the copied file/folder</param>
+        /// <param name="dest_path">Destination of the copied file/folder</param>
+        /// <param name="mode">1: skip, 0: overwrite</param>
+        /// <param name="duplicationName">The duplication file name when copying the same destination with source files/folders.</param>
+        /// <param name="callback"></param>
+        public void Copy(string source_file, int source_total, string source_path, string dest_path, int mode, string duplicationName, FileSyncAPIRequest.FileSyncRequestCompletedHandler callback)
+        {
+            //if (string.IsNullOrEmpty(duplicationName))
+            //{
+            //    duplicationName = Path.GetFileNameWithoutExtension(source_file) + DateTime.Now.Ticks.ToString() + Path.GetExtension(source_file);
+            //}
+
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add("func", "copy");
+            dict.Add("source_file", source_file);
+            dict.Add("source_total", source_total.ToString());
+            dict.Add("source_path", source_path);
+            dict.Add("dest_path", dest_path);
+            dict.Add("mode", mode.ToString());
+
+            //optional
+            if (!string.IsNullOrEmpty(duplicationName))
+            {
+                dict.Add("dup", duplicationName);
+            }
 
             m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
         }
@@ -101,10 +135,10 @@ namespace FileSyncDemo
         {
             Dictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("func", "move");
-            dict.Add("source_file", HttpUtility.UrlEncode(source_file));
+            dict.Add("source_file", source_file);
             dict.Add("source_total", source_total.ToString());
-            dict.Add("source_path", HttpUtility.UrlEncode(source_path));
-            dict.Add("dest_path", HttpUtility.UrlEncode(dest_path));
+            dict.Add("source_path", source_path);
+            dict.Add("dest_path", dest_path);
             dict.Add("mode", mode.ToString());
 
             m_fsConnect.SendRequest("filemanager/utilRequest.cgi", "GET", dict, callback);
