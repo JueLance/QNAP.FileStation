@@ -87,7 +87,7 @@
             // 
             // tsbRefresh
             // 
-            this.tsbRefresh.Image = global::FileSyncDemo.Properties.Resources.arrow_refresh;
+            this.tsbRefresh.Image = global::FileSyncSDK.Demo.Properties.Resources.arrow_refresh;
             this.tsbRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbRefresh.Name = "tsbRefresh";
             this.tsbRefresh.Size = new System.Drawing.Size(66, 22);

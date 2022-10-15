@@ -142,7 +142,7 @@
             // 
             // refreshToolStripMenuItem
             // 
-            this.refreshToolStripMenuItem.Image = global::FileSyncDemo.Properties.Resources.arrow_refresh;
+            this.refreshToolStripMenuItem.Image = global::FileSyncSDK.Demo.Properties.Resources.arrow_refresh;
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
             this.refreshToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
             this.refreshToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
@@ -156,7 +156,7 @@
             // 
             // copyToolStripMenuItem
             // 
-            this.copyToolStripMenuItem.Image = global::FileSyncDemo.Properties.Resources.page_copy;
+            this.copyToolStripMenuItem.Image = global::FileSyncSDK.Demo.Properties.Resources.page_copy;
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.copyToolStripMenuItem.Text = "Copy";
@@ -171,7 +171,7 @@
             // 
             // moveToolStripMenuItem
             // 
-            this.moveToolStripMenuItem.Image = global::FileSyncDemo.Properties.Resources.folder_go;
+            this.moveToolStripMenuItem.Image = global::FileSyncSDK.Demo.Properties.Resources.folder_go;
             this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
             this.moveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.moveToolStripMenuItem.Text = "Move";
@@ -179,7 +179,7 @@
             // 
             // toolStripMenuItem1
             // 
-            this.toolStripMenuItem1.Image = global::FileSyncDemo.Properties.Resources.disk;
+            this.toolStripMenuItem1.Image = global::FileSyncSDK.Demo.Properties.Resources.disk;
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.toolStripMenuItem1.Text = "Save As";
@@ -199,7 +199,7 @@
             // 
             // deleteToolStripMenuItem
             // 
-            this.deleteToolStripMenuItem.Image = global::FileSyncDemo.Properties.Resources.delete;
+            this.deleteToolStripMenuItem.Image = global::FileSyncSDK.Demo.Properties.Resources.delete;
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
@@ -208,7 +208,7 @@
             // 
             // RenametoolStripMenuItem
             // 
-            this.RenametoolStripMenuItem.Image = global::FileSyncDemo.Properties.Resources.drive_rename;
+            this.RenametoolStripMenuItem.Image = global::FileSyncSDK.Demo.Properties.Resources.drive_rename;
             this.RenametoolStripMenuItem.Name = "RenametoolStripMenuItem";
             this.RenametoolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
             this.RenametoolStripMenuItem.Size = new System.Drawing.Size(152, 22);
@@ -311,7 +311,7 @@
             // 
             // tsmExit
             // 
-            this.tsmExit.Image = global::FileSyncDemo.Properties.Resources.exit;
+            this.tsmExit.Image = global::FileSyncSDK.Demo.Properties.Resources.exit;
             this.tsmExit.Name = "tsmExit";
             this.tsmExit.Size = new System.Drawing.Size(133, 22);
             this.tsmExit.Text = "Exit(&E)";
@@ -345,7 +345,7 @@
             // 
             // btnUpload
             // 
-            this.btnUpload.Image = global::FileSyncDemo.Properties.Resources.add;
+            this.btnUpload.Image = global::FileSyncSDK.Demo.Properties.Resources.add;
             this.btnUpload.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnUpload.Name = "btnUpload";
             this.btnUpload.Size = new System.Drawing.Size(65, 22);
@@ -354,7 +354,7 @@
             // 
             // tsbNewFolder
             // 
-            this.tsbNewFolder.Image = global::FileSyncDemo.Properties.Resources.folder_add;
+            this.tsbNewFolder.Image = global::FileSyncSDK.Demo.Properties.Resources.folder_add;
             this.tsbNewFolder.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbNewFolder.Name = "tsbNewFolder";
             this.tsbNewFolder.Size = new System.Drawing.Size(84, 22);
