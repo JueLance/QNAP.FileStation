@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-using mshtml;
+using MSHTML;
 
 //javascript(DHTML)代码和客户端应用程序代码之间实现双向通信.
 //if (webBrowser1.Document != null) webBrowser1.Document.GetElementById("Button1").InvokeMember("onclick"); 

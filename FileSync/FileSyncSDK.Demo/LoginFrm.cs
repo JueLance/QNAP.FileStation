@@ -16,27 +16,36 @@ namespace FileSyncDemo
 {
     public partial class LoginFrm : Form
     {
+        public class MyScriptObject
+        {
+            private LoginFrm _form;
+
+            public MyScriptObject(LoginFrm form)
+            {
+                _form = form;
+            }
+            public void Login(string username, string password)
+            {
+                Authorization auth = new Authorization(Program.fsConnect);
+                auth.Authorize(username, password, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(_form.AuthorizeFinish));
+            }
+
+            public void SetEnvironment(string server, int port)
+            {
+                Program.fsConnect = new FileSync("Http", server, port);
+            }
+        }
+
         public LoginFrm()
         {
             InitializeComponent();
-            webBrowser1.ObjectForScripting = this;
+            webBrowser1.ObjectForScripting = new MyScriptObject(this);
         }
 
         private void LoginFrm_Load(object sender, EventArgs e)
         {
             string url = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "login.htm");
             webBrowser1.Url = new Uri(url);
-        }
-
-        public void Login(string username, string password)
-        {
-            Authorization auth = new Authorization(Program.fsConnect);
-            auth.Authorize(username, password, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(AuthorizeFinish));
-        }
-
-        public void SetEnvironment(string server, int port)
-        {
-            Program.fsConnect = new FileSync("Http", server, port);
         }
 
         private void AuthorizeFinish(object obj, FileSyncRequestResultEventArgs arg)

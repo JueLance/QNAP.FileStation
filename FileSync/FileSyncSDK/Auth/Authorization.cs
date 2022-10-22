@@ -8,8 +8,8 @@ namespace FileSyncDemo
 {
     public class Authorization
     {
-        FileSync m_fsConnect = null;
-        FileSyncAPIRequest.FileSyncRequestCompletedHandler tempCallback = null;
+        FileSync m_fsConnect;
+        FileSyncAPIRequest.FileSyncRequestCompletedHandler tempCallback;
 
         private const string requestErrorDomain = "99999999";
 
@@ -29,7 +29,6 @@ namespace FileSyncDemo
 
             m_fsConnect.SendRequest("authLogin.cgi", "GET", dict, new FileSyncAPIRequest.FileSyncRequestCompletedHandler(AuthorizeFinish));
         }
-
 
         public void Logout(FileSyncAPIRequest.FileSyncRequestCompletedHandler callback)
         {

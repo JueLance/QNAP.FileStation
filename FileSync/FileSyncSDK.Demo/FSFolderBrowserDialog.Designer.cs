@@ -96,7 +96,7 @@
             // 
             // btnNewFloder
             // 
-            this.btnNewFloder.Image = global::FileSyncDemo.Properties.Resources.folder_add;
+            this.btnNewFloder.Image = global::FileSyncSDK.Demo.Properties.Resources.folder_add;
             this.btnNewFloder.Location = new System.Drawing.Point(14, 9);
             this.btnNewFloder.Name = "btnNewFloder";
             this.btnNewFloder.Size = new System.Drawing.Size(97, 29);
